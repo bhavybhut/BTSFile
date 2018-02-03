@@ -1,0 +1,69 @@
+<?page title="BTS Admin"?>
+<?component name="button" extends="button" width="44px" height="44px"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+				
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-user" label="Profile" />
+			<menu iconSclass="icon icon-white icon-envelope" label="Messages">
+				<menupopup sclass="navpp">
+					<menuitem label="new message" />
+					<menuitem label="inbox" />
+					<menuitem label="outbox" />
+					<menuitem label="trash" />
+				</menupopup>
+			</menu>
+			<menuitem iconSclass="icon icon-white icon-cog" label="Settings" />
+			<menuitem iconSclass="icon icon-white icon-share-alt" label="Logout" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home" label="Dashboard" selected="true"/>
+		<nav iconSclass="icon icon-white icon-th-list" label="Form elements">
+			<navitem label="Common elements"/>
+			<navitem label="Validation"/>
+			<navitem label="Wizard"/>
+		</nav>
+		<navitem iconSclass="icon icon-white icon-tint" label="Buttons &amp; icons"/>
+		<navitem iconSclass="icon icon-white icon-pencil" label="Interface elements"/>
+		<navitem iconSclass="icon icon-white icon-th" label="Tables"/>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Grid Layout"/>
+		<nav iconSclass="icon icon-white icon-file" label="Sample pages">
+			<navitem label="Invoice"/>
+			<navitem label="Support chat"/>
+			<navitem label="Calendar"/>
+			<navitem label="Gallery"/>
+		</nav>
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<n:h1>Dashboard</n:h1>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="#" tooltip="btntip,after_center" iconSclass="icon-home">Home<custom-attributes title="Go to Home" /></a>
+			<a href="#">Dashboard</a>
+		</div>
+		<include src="" /> <!-- include respective .zul files here -->
+	</div>
+</zk>

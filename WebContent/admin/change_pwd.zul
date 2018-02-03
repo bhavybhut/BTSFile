@@ -1,0 +1,137 @@
+<?page title="Edit Profile" contentType="text/html;charset=UTF-8"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home"
+			label="Dashboard" href="admin_home.zul" />
+		<nav iconSclass="icon icon-white icon-th-list" label="User">
+			<navitem label="View User" href="view_user.zul" />
+			<navitem label="Create User" href="create_user.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list"
+			label="Project">
+			<navitem label="View Projects" href="view_proj.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="View Bug Report" href="bug_report.zul" />
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" selected="true" label="Change Password" href="change_pwd.zul" />
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="dev_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">Change Password</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid">
+				<div class="center">
+
+					<div align="center">
+						<window width="500px">
+							<grid>
+								<rows>
+									<row>
+										New Password:
+										<textbox id="pwd"
+											type="password">
+										</textbox>
+									</row>
+									<row>
+										Re-type Password:
+										<textbox id="cpwd"
+											type="password">
+										</textbox>
+									</row>
+									<row>
+										<label></label>
+										<button label="Change Password"
+											id="changebtn" onClick="change()">
+										</button>
+									</row>
+								</rows>
+							</grid>
+							<zscript><![CDATA[
+							                  import login.EditProfile;
+							                  void change(){
+							                	  EditProfile profile = new EditProfile();
+							                	  if(pwd.getValue().equals(cpwd.getValue())){
+							                	  	profile.setPassword(pwd.getValue(),cpwd.getValue());
+							                	  	pwd.setValue("");
+							                	  	cpwd.setValue("");
+							                	  	}
+							                	  else{
+							                		  Messagebox.show("Passwords do not match");
+							                		  pwd.setValue("");
+							                		  cpwd.setValue("");
+							                	}
+							                  }
+							]]>
+							</zscript>
+						</window>
+					</div>
+
+				</div>
+			</div>
+		</vlayout>
+	</div>
+</zk>

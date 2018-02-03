@@ -1,0 +1,51 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window id="editProjectWin" title="Edit User"
+width="500px" apply="projectManager.EditProject" closable="true" sizable="true"
+action="show: slideDown;hide: slideUp" position="center,center">
+<zscript><![CDATA[
+                  import projectManager.Project;
+                  import projectManager.InsertData;
+                  import java.sql.Date;
+                  void submit()
+                  {
+                	  Long stDate = startDate.getValue().getTime();
+                	  Date date1 = new Date(stDate);
+                	  
+                	  Long eDate = endDate.getValue().getTime();
+                	  Date date2 = new Date(eDate);
+                	  
+                	  Project project = new Project(id.getValue(),name.getValue(),date1,date2);
+                	  InsertData update = new InsertData();
+                	  update.updateProject(project);
+                	  Executions.sendRedirect("view_proj.zul");
+                	  editProjectWin.detach();
+                  }
+]]>
+</zscript>
+<grid>
+	<rows>
+		<row>
+			<label value="Id"></label>
+			<label id="id"/>
+		</row>
+		<row>
+			<label value="Name" width="150px"></label>
+			<textbox id="name"></textbox>
+		</row>
+		<row>
+			Start Date:
+			<datebox id="startDate" constraint="no empty:Date cannot be empty."></datebox>
+		</row>
+		<row>
+			End Date:
+			<datebox id="endDate" constraint="no empty:Date cannot be empty."></datebox>
+		</row>
+		<row>
+			<button height="30px" label="Update" onClick="submit()"></button>
+			<button height="30px" label="Cancel" onClick="editProjectWin.detach()"></button>
+		</row>
+	</rows>
+</grid>
+</window>
+</zk>

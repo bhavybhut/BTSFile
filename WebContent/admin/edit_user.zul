@@ -1,0 +1,61 @@
+<?page title="Edit Customer" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+
+<window id="editUserWin" title="Edit User"
+width="500px" apply="admin.EditUser" closable="true" sizable="true"
+action="show: slideDown;hide: slideUp" position="center,center">
+<zscript><![CDATA[
+    import admin.JdbcComposer;
+    import admin.User;
+	public void submit() {
+		User user = new User(u_id.getValue(),name.getValue(),unm.getValue(),desig.getValue(),email.getValue(),pm.getValue(),dept.getValue());
+		JdbcComposer composer = new JdbcComposer();
+		composer.updateUser(user);
+		Executions.getCurrent().sendRedirect("view_user.zul");
+		editUserWin.detach();
+	}
+	]]>
+</zscript>
+<grid>
+	<rows>
+		<row>
+			<label value="Id"></label>
+			<label id="u_id"/>
+		</row>
+		<row>
+			<label value="Name" width="150px"></label>
+			<textbox id="name"></textbox>
+		</row>
+		<row>
+			Username:
+			<textbox id="unm" constraint="no empty:Username cannot be empty."></textbox>
+		</row>
+		<row>
+			Designation:
+			<combobox id="desig" autodrop="true" constraint="no empty:Select Designation">
+				<comboitem label="Developer" value="Developer"/>
+				<comboitem label="Project Manager" value="Project Manager"/>
+				<comboitem label="Tester" value="Tester"/>
+			</combobox>
+		</row>
+		<row>
+			Email-id:
+			<textbox id="email" constraint="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ :Enter a valid Email-id"></textbox>
+		</row>
+		<row>
+			Project Manager:
+			<textbox id="pm"></textbox>
+		</row>
+		<row>
+			Department:
+			<textbox id="dept"></textbox>
+		</row>
+		<row>
+			<button height="30px" label="Update" onClick="submit()"></button>
+			<button height="30px" label="Cancel" onClick="editUserWin.detach()"></button>
+		</row>
+	</rows>
+</grid>
+</window>
+</zk>

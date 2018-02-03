@@ -1,0 +1,112 @@
+<?page title="Bug Tracking System" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+<div align="center">
+<image src="/images/logo.gif" height="100px"/>
+</div>
+<separator></separator>
+<separator></separator>
+<separator></separator>
+<separator></separator>
+<separator></separator>
+<separator></separator>
+<separator></separator>
+<separator></separator>
+<style>
+			
+ 			div.loginGrid 
+ 			{
+            	border: none;
+            }
+           
+            body
+            {
+            	height:100%;
+            	padding:5%;
+            }
+</style>
+<div align="center" style="background-color:pink" height="300px">
+
+<window title="Sign-in" width="300px" mode="embedded"  apply="login.LoginValidation">
+<grid id="loginGrid">
+	<columns>
+		<column height="80px"></column>
+		<column height="80px"></column>
+	</columns>
+	<rows>
+		<row>
+			Username : 
+			<textbox id="unm"></textbox>
+		</row>
+		<row>
+			Password : 
+			<textbox id="pwd" type="password"></textbox>
+		</row>
+		<row>
+		</row>
+		<row align="center">
+			<a onClick="winShow()">Forgot Password</a>
+			<vlayout><button label="Login"></button>
+			<label value="Invalid username or password" visible="false" id="msg"></label></vlayout>
+		</row>
+	</rows>
+</grid>
+</window>
+<zscript><![CDATA[
+                  void winShow(){
+                	  forgetpwd.setVisible(true);
+                	  forgetpwd.setMode("highlighted");
+                	  forgetpwd.setHeight("130px");
+                	  forgetpwd.setWidth("300px");
+                	  forgetpwd.setPosition("center");
+                  }
+]]>
+</zscript>
+<window id="forgetpwd" closable="true" onClose="move()" title="Forget Password" visible="false" apply="login.ForgetPassword">
+<grid>
+	<rows>
+		<row id="lblunm" height="50px">
+			<label value="Enter Username"></label>
+			<textbox id="uname"></textbox>
+		</row>
+		<row id="btnunm" height="50px">
+			<label></label>
+			<button id="submit" label="Submit"></button>
+		</row>
+		<row id="sec_que" visible="false">
+			<label value="Security Question"></label>
+			<label id="que"></label>
+		</row>
+		<row id="sec_ans" visible="false">
+			<label value="Answer"></label>
+			<textbox id="ans"></textbox>
+		</row>
+		<row id="btnsubmit" visible="false">
+			<label></label>
+			<button id="submitAns" label="Submit"></button>
+		</row>
+		<row id="newpwd" visible="false">
+			<label value="New Password"></label>
+			<textbox type="password" id="npwd"></textbox>
+		</row>
+		<row id="newcpwd" visible="false">
+			<label value="Confirm Password"></label>
+			<textbox type="password" id="cpwd"></textbox>
+		</row>
+		<row id="btnpwd" visible="false">
+			<label></label>
+			<button id="changePwd" label="Change Password"></button>
+		</row>
+	</rows>
+</grid>
+<zscript><![CDATA[
+                  void move(){
+                	  Executions.sendRedirect("index.zul");
+                  }
+]]>
+</zscript>
+</window>
+
+</div>
+
+</zk>

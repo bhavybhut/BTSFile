@@ -1,0 +1,192 @@
+<?page title="BTS Admin"?>
+<?component name="button" extends="button" width="44px" height="44px"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home"
+			label="Dashboard" href="admin_home.zul" />
+		<nav iconSclass="icon icon-white icon-th-list" label="User">
+			<navitem label="View User" href="view_user.zul" selected="true"/>
+			<navitem label="Create User" href="create_user.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list"
+			label="Project">
+			<navitem label="View Projects" href="view_proj.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="View Bug Report" href="bug_report.zul" />
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Change Password" href="change_pwd.zul" />
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="admin_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">View User</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid" align="center">
+				<div class="center">
+					<div apply="org.zkoss.bind.BindComposer"
+						viewModel="@id('vm') @init('admin.FilterViewModel')">
+						<grid height="500px"
+							model="@load(vm.userStatus) @template((each.editingStatus)?'editable':'noneditable')">
+							<auxhead sclass="category-center">
+								<auxheader label="User List"
+									colspan="8" />
+							</auxhead>
+							<auxhead sclass="category-center">
+								<auxheader colspan="1">
+									<image src="/images/funnel.png" />
+									<textbox instant="true"
+										width="100px" value="@bind(vm.userFilter.name)"
+										onChange="@command('changeFilter')" />
+								</auxheader>
+								<auxheader colspan="1">
+									<image src="/images/funnel.png" />
+									<textbox instant="true"
+										width="100px" value="@bind(vm.userFilter.username)"
+										onChange="@command('changeFilter')" />
+								</auxheader>
+								<auxheader colspan="1"></auxheader>
+								<auxheader colspan="1"></auxheader>
+								<auxheader colspan="1"></auxheader>
+								<auxheader colspan="1">
+									<image src="/images/funnel.png" />
+									<textbox instant="true"
+										width="100px" value="@bind(vm.userFilter.dept)"
+										onChange="@command('changeFilter')" />
+								</auxheader>
+								<auxheader></auxheader>
+								<auxheader></auxheader>
+							</auxhead>
+							<columns>
+								<column hflex="1">Name</column>
+								<column hflex="1">Username</column>
+								<column hflex="1">Designation</column>
+								<column hflex="1">E Mail</column>
+								<column hflex="1">
+									Project Manager
+								</column>
+								<column hflex="1">Department</column>
+								<column hflex="1">Modify User</column>
+								<column hflex="1">Delete User</column>
+							</columns>
+							<template name="editable">
+								<row>
+									<textbox
+										value="@load(each.user.name) @save(each.user.name, before='confirm')" />
+									<textbox
+										value="@load(each.user.username) @save(each.user.username, before='confirm')" />
+									<textbox
+										value="@load(each.user.designation) @save(each.user.designation, before='confirm')" />
+									<textbox
+										value="@load(each.user.email) @save(each.user.email, before='confirm')" />
+									<textbox
+										value="@load(each.user.pm) @save(each.user.pm, before='confirm')" />
+									<textbox
+										value="@load(each.user.dept) @save(each.user.dept, before='confirm')" />
+									<div>
+										<button image="right.png"
+											onClick="@command('confirm', languageContributionStatus=each)" />
+										<button image="cross.png"
+											onClick="@command('changeEditableStatus', languageContributionStatus=each)" />
+									</div>
+								</row>
+							</template>
+							<template name="noneditable">
+								<row>
+									<label
+										value="@load(each.user.name)" />
+									<label
+										value="@load(each.user.username)" />
+									<label
+										value="@load(each.user.designation)" />
+									<label
+										value="@load(each.user.email)" />
+									<label value="@load(each.user.pm)" />
+									<label
+										value="@load(each.user.dept)" />
+									<button image="/images/pencil.png"
+										onClick="@command('changeEditableStatus', userStatus=each)"
+										tooltip="EditPopup" />
+									<button image="/images/trash.png"
+										onClick="@command('delete',userStatus=each)"
+										tooltip="DeletePopup" />
+								</row>
+							</template>
+							<foot>
+								<footer span="6" class="footer_right"
+									label="@load(vm.footer)" />
+							</foot>
+						</grid>
+						<popup id="EditPopup" width="150px">
+							<html><![CDATA[Edit Information ]]></html>
+						</popup>
+						<popup id="DeletePopup" width="150px">
+							<html><![CDATA[Delete Record ]]></html>
+						</popup>
+					</div>
+				</div>
+			</div>
+		</vlayout>
+	</div>
+</zk>

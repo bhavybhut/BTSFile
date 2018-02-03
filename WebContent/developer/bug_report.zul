@@ -1,0 +1,147 @@
+<?component name="button" extends="button" width="44px" height="44px"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-user"
+				label="Profile" href="edit_prof.zul"/>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home" label="Dashboard" href="dev_home.zul"/>
+		<nav iconSclass="icon icon-white icon-th-list" label="Project">
+			<navitem label="View Assigned Project" href="view_proj.zul"/>
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="View Bug Report" selected="true" href="bug_report.zul"/>
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Change Password" href="change_pwd.zul" />
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="dev_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">View Bugs</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid">
+				<div class="center">
+					<div apply="org.zkoss.bind.BindComposer"
+						viewModel="@id('vm') @init('developer.FilterViewModel')">
+						<grid model="@load(vm.bugStatus)">
+							<auxhead>
+								<auxheader colspan="5">
+									Bug Report
+								</auxheader>
+							</auxhead>
+							<auxhead>
+								<auxheader></auxheader>
+								<auxheader>
+									<image src="/images/funnel.png"></image>
+									<textbox instant="true"
+										value="@bind(vm.bugFilter.pname)"
+										onChange="@command('changeBugFilter')" width="100px">
+									</textbox>
+								</auxheader>
+								<auxheader></auxheader>
+								<auxheader>
+									<image src="/images/funnel.png"></image>
+									<textbox instant="true"
+										value="@bind(vm.bugFilter.priority)"
+										onChange="@command('changeBugFilter')" width="100px">
+									</textbox>
+								</auxheader>
+								<auxheader></auxheader>
+							</auxhead>
+							<columns>
+								<column>Bug Id</column>
+								<column>Project Name</column>
+								<column>Bug Summary</column>
+								<column>Priority</column>
+								<column>Status</column>
+							</columns>
+							<template name="model">
+								<row>
+									<label value="@load(each.bug.b_id)"
+										onClick="@command('viewBugDetail',bugStatus=each)">
+									</label>
+									<label
+										value="@load(each.bug.pname)">
+									</label>
+									<label
+										value="@load(each.bug.summary)">
+									</label>
+									<label
+										value="@load(each.bug.priority)">
+									</label>
+									<label
+										value="@load(each.bug.status)">
+									</label>
+								</row>
+							</template>
+							<foot>
+								<footer span="6" class="footer_right"
+									label="@load(vm.bugFooter)" />
+							</foot>
+						</grid>
+					</div>
+				</div>
+			</div>
+		</vlayout>
+	</div>
+</zk>

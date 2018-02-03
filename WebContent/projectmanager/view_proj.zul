@@ -1,0 +1,141 @@
+<?page title="View Projects" contentType="text/html;charset=UTF-8"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-user"
+				label="Profile" href="edit_prof.zul"/>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home"
+			label="Dashboard" href="pm_home.zul" />
+		<nav iconSclass="icon icon-white icon-th-list" label="User">
+			<navitem label="View Users" href="view_user.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list"
+			label="Project">
+			<navitem label="Create Project" href="create_proj.zul" />
+			<navitem label="Assign Project" href="assign_proj.zul" />
+			<navitem selected="true" label="View Projects" href="view_proj.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="View Bug Report" href="bug_report.zul" />
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Change Password" href="change_pwd.zul"></navitem>
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="pm_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">View Projects</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid">
+				<div class="center">
+					<div apply="org.zkoss.bind.BindComposer"
+						viewModel="@id('vm') @init('projectManager.FilterViewModel')">
+						<grid model="@load(vm.projectStatus)">
+							<auxhead>
+								<auxheader colspan="4">
+									Project List
+								</auxheader>
+							</auxhead>
+							<auxhead>
+								<auxheader colspan="1">
+									<image src="/images/funnel.png" />
+									<textbox instant="true"
+										width="100px" value="@bind(vm.projectFilter.name)"
+										onChange="@command('changeFilter')" />
+								</auxheader>
+							</auxhead>
+							<columns>
+								<column>Project Name</column>
+								<column>Start Date</column>
+								<column>End Date</column>
+								<column>Edit Project</column>
+								<column>Delete Project</column>
+							</columns>
+							<template name="model">
+								<row>
+									<label
+										value="@load(each.project.name)" onClick="@command('selectProject',projectStatus=each)">
+									</label>
+									<label
+										value="@load(each.project.stdate)">
+									</label>
+									<label
+										value="@load(each.project.edate)">
+									</label>
+									<button image="/images/pencil.png"
+										onClick="@command('changeEditableStatus',projectStatus=each)">
+									</button>
+									<button image="/images/trash.png"
+										onClick="@command('delete',projectStatus=each)" />
+								</row>
+							</template>
+							<foot>
+								<footer span="6" class="footer_right"
+									label="@load(vm.footer)" />
+							</foot>
+						</grid>
+					</div>
+				</div>
+			</div>
+		</vlayout>
+	</div>
+</zk>

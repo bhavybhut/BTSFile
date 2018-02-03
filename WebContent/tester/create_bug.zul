@@ -1,0 +1,217 @@
+<?page title="Create Bug" contentType="text/html;charset=UTF-8"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-user"
+				label="Profile" href="edit_prof.zul"/>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home"
+			label="Dashboard" href="tester_home.zul" />
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="Create Bug" selected="true" href="create_bug.zul" />
+			<navitem label="View Bug Report" href="bug_report.zul" />
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Change Password" href="change_pwd.zul" />
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="tester_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">Create Bug</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid">
+				<div class="center">
+					<div align="center"
+						apply="org.zkoss.bind.BindComposer"
+						viewModel="@id('vm') @init('projectManager.FilterViewModel')">
+						<window title="Create a new Bug" width="1000px"
+							apply="tester.DbConnectivity">
+							<grid>
+								<rows>
+									<row>
+										Select Project:
+										<combobox width="150px"
+											id="proj" autodrop="true" model="@load(vm.projectModel)"
+											constraint="no empty:Please Select Project">
+											<template name="model">
+												<comboitem
+													label="@load(each.name)" value="@load(each.name)">
+												</comboitem>
+											</template>
+										</combobox>
+									</row>
+									<row>
+										Priority:
+										<combobox width="150px"
+											id="priority" constraint="no empty:Please select Priority">
+											<comboitem label="Critical"
+												value="Critical">
+											</comboitem>
+											<comboitem label="High"
+												value="High">
+											</comboitem>
+											<comboitem label="Normal"
+												value="Normal">
+											</comboitem>
+											<comboitem label="Low"
+												value="Low">
+											</comboitem>
+										</combobox>
+									</row>
+									<row>
+										Summary:
+										<textbox width="145px"
+											id="summary"
+											constraint="no empty:Please write summary of bug">
+										</textbox>
+									</row>
+									<row>
+										Description:
+										<textbox width="145px"
+											id="description" rows="3"
+											constraint="no empty:Describe bug in brief">
+										</textbox>
+									</row>
+									<row>
+										<label value="Upload File"
+											id="lblUpload">
+										</label>
+										<textbox id="imgName"></textbox>
+										<button label="Upload"
+											id="btnUpload">
+											<attribute name="onClick">
+											Fileupload.get(new org.zkoss.zk.ui.event.EventListener(){
+												public void onEvent(UploadEvent event) {
+													org.zkoss.util.media.Media media = event.getMedia();
+													if (media instanceof org.zkoss.image.Image) {
+														lblFile.setVisible(true);
+														img.setVisible(true);
+														btnRemove.setVisible(true);
+														img.setContent(event.media);
+														byte[] image = media.getByteData();
+														tester.DbConnectivity con = new tester.DbConnectivity();
+														con.storeBytes(image);
+														imgName.setValue(image.toString());
+														lblUpload.setVisible(false);
+														imgName.setVisible(false);
+														btnUpload.setVisible(false);
+													} else if (media != null)
+														Messagebox.show("Not an image: " + media, "Error", Messagebox.OK,
+																Messagebox.ERROR);
+												}
+											});
+										</attribute>
+										</button>
+									</row>
+									<row>
+										<label id="lblFile" value="File"
+											visible="false">
+										</label>
+										<image id="img" visible="false" />
+										<button id="btnRemove"
+											label="Remove Image" visible="false">
+											<attribute name="onClick">
+											{
+												lblUpload.setVisible(true);
+												imgName.setVisible(true);
+												imgName.setValue("");
+												btnUpload.setVisible(true);
+												lblFile.setVisible(false);
+												img.setVisible(false);
+												btnRemove.setVisible(false);
+											}
+										</attribute>
+										</button>
+									</row>
+									<row>
+										Assign To:
+										<combobox width="150px"
+											id="developer" autodrop="true"
+											model="@load(vm.developerModel)"
+											constraint="no empty:Please Select Developer">
+											<template name="model">
+												<comboitem
+													label="@load(each.name)" value="@load(each.name)">
+												</comboitem>
+											</template>
+										</combobox>
+									</row>
+									<row>
+										Version:
+										<textbox width="145px"
+											id="version"
+											constraint="no empty:Please write summary of bug"></textbox>
+									</row>
+									<row>
+										<label></label>
+										<button label="Create Bug" id="btnBug"
+											height="30px">
+										</button>
+									</row>
+								</rows>
+							</grid>
+						</window>
+					</div>
+				</div>
+			</div>
+		</vlayout>
+	</div>
+</zk>

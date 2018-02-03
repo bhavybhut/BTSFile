@@ -1,0 +1,152 @@
+<?page title="Create New User" contentType="text/html;charset=UTF-8"?>
+
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home"
+			label="Dashboard" href="admin_home.zul" />
+		<nav iconSclass="icon icon-white icon-th-list" label="User">
+			<navitem label="View User" href="view_user.zul" />
+			<navitem label="Create User" selected="true" href="create_user.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list"
+			label="Project">
+			<navitem label="View Projects" href="view_proj.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="View Bug Report" href="bug_report.zul" />
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Change Password" href="change_pwd.zul" />
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="admin_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">Create User</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid" align="center">
+				<div class="center" style="text-align: center;">
+						<div id="form" align="center">
+						<window title="Create New User" width="600px" apply="admin.JdbcComposer">
+						<grid>
+							<rows>
+								<row>
+									<label value="Name" width="150px"></label>
+									<textbox id="name"></textbox>
+								</row>
+								<row>
+									Username:
+									<textbox id="unm" constraint="no empty:Username cannot be empty."></textbox>
+								</row>
+								<row>
+									Password:
+									<textbox id="pwd" type="password" constraint="/^(?=.{6,12}$)[a-z0-9][a-z0-9]*(?:_[a-z0-9]+)*$/:Length between 6 to 12"></textbox>
+								</row>
+								<row>
+									Re-type Password:
+									<textbox id="cpwd" type="password" constraint="no empty:Please re-type password"></textbox>
+								</row>
+								<row>
+									Designation:
+									<combobox id="desig" autodrop="true" constraint="no empty:Select Designation">
+										<comboitem label="Developer" value="Developer"/>
+										<comboitem label="Project Manager" value="Project Manager"/>
+										<comboitem label="Tester" value="Tester"/>
+									</combobox>
+								</row>
+								<row>
+									Email-id:
+									<textbox id="email" constraint="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ :Enter a valid Email-id"></textbox>
+								</row>
+								<row>
+									Project Manager:
+									<textbox id="pm"></textbox>
+								</row>
+								<row>
+									Department:
+									<textbox id="dept"></textbox>
+								</row>
+								<row>
+									<label></label>
+									<button label="Create New User" onClick="pwdMatch()"></button>
+								</row>
+							</rows>
+						</grid>
+						<zscript><![CDATA[
+						                  
+						          void pwdMatch()
+						          {
+						            	if(!(pwd.getValue().equals(cpwd.getValue())))
+						            	{
+						            		alert("Passwords do not match");
+						            	}
+						          };    
+						                	  
+						                  ]]>
+						</zscript>
+						</window>
+						</div>
+				</div>
+			</div>
+		</vlayout>
+</div>
+</zk>

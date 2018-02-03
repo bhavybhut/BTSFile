@@ -1,0 +1,161 @@
+<?page title="Bug Details" contentType="text/html;charset=UTF-8"?>
+<?link rel="stylesheet" type="text/css"	href="/bootstrap/css/bootstrap.css" ?>
+<?link rel="stylesheet" type="text/css" href="/css/index.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/user-nav.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/sidebar.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/search.css.dsp" ?>
+<?link rel="stylesheet" type="text/css"
+	href="/css/content-header.css.dsp" ?>
+<?link id="theme" rel="stylesheet" type="text/css"
+	href="/css/grey.css.dsp"?>
+
+<zk xmlns:n="native">
+
+	<div sclass="header">
+		<n:h1>
+			<a>BTS</a>
+		</n:h1>
+	</div>
+
+	<div sclass="user-nav">
+		<menubar>
+			<menuitem iconSclass="icon icon-white icon-user"
+				label="Profile" href="edit_prof.zul"/>
+			<menuitem iconSclass="icon icon-white icon-share-alt"
+				label="Logout" onClick="logout()" />
+		</menubar>
+	</div>
+
+	<navbar orient="vertical" sclass="sidebar">
+		<navitem iconSclass="icon icon-white icon-home"
+			label="Dashboard" href="dev_home.zul" />
+		<nav iconSclass="icon icon-white icon-th-list"
+			label="Project">
+			<navitem label="View Assigned Project" href="view_proj.zul" />
+		</nav>
+		<nav iconSclass="icon icon-white icon-th-list" label="Bug">
+			<navitem label="View Bug Report" href="bug_report.zul" />
+		</nav>
+		<navitem iconSclass="icon icon-white icon-th-list" label="Change Password" href="change_pwd.zul" />
+	</navbar>
+
+	<div sclass="content">
+		<div sclass="content-header">
+			<div id="welcome" onCreate="getUser()">
+				<zscript><![CDATA[
+	void getUser() {
+		try {
+			String unm = String.valueOf(Sessions.getCurrent().getAttribute(
+					"user"));
+			user.setValue(unm);
+		} catch (Exception e) {
+			Executions.sendRedirect("../login.zul");
+		}
+	}
+	void logout() {
+		try {
+			Sessions.getCurrent().invalidate();
+			Executions.sendRedirect("../login.zul");
+		} catch (Exception e) {
+		}
+	}
+]]>
+			</zscript>
+				<n:h1>
+					Welcome
+					<label id="user" style="font-size:28px;"></label>
+				</n:h1>
+			</div>
+		</div>
+		<div sclass="breadcrumb">
+			<a href="dev_home.zul" tooltip="btntip,after_center"
+				iconSclass="icon-home">
+				Home
+				<custom-attributes title="Go to Home" />
+			</a>
+			<a href="#">Bug Details</a>
+		</div>
+		<!-- <include src="" /> include respective .zul files here -->
+
+		<vlayout xmlns:n="native" style="padding: 20px">
+			<div class="row-fluid">
+				<div class="center">
+
+					<window apply="developer.BugDetails">
+						<hlayout>
+							<div width="600px">
+								<grid>
+									<rows>
+										<row>
+											Bug Id:
+											<label id="b_id"></label>
+										</row>
+										<row>
+											Bug Summary:
+											<label id="summary"></label>
+										</row>
+										<row>
+											Affected Version:
+											<label id="version"></label>
+										</row>
+										<row>
+											Bug Description:
+											<label id="desc"></label>
+										</row>
+										<row id="imgrow">
+											File:
+											<image id="img" height="150px" width="150px"></image>
+										</row>
+									</rows>
+								</grid>
+							</div>
+							<space width="300px"></space>
+							<vlayout>
+								<div width="300px" height="100px">
+									<grid>
+										<rows>
+											<row>Assigned To:
+												<label id="devName"></label>
+											</row>
+											<row>Assigned By:
+												<label id="testerName"></label>
+											</row>
+										</rows>
+									</grid>
+								</div>
+								
+								<div width="300px">
+									<grid>
+										<rows>
+											<row>Project Name:
+												<label id="pname"></label>
+											</row>
+											<row></row>
+											<row></row>
+											<row>Create Date:
+												<label id="cdate"></label>
+											</row>
+										</rows>
+									</grid>
+								</div>
+							</vlayout>
+						</hlayout>
+					</window>
+					<div>
+					<window width="600px" apply="developer.BugSolution">
+						<grid>
+							<rows id="postrow">
+								<row id="post">
+								</row>
+							</rows>
+						</grid>
+					</window>
+					</div>
+				</div>
+			</div>
+		</vlayout>
+	</div>
+</zk>
